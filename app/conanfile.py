@@ -2,6 +2,7 @@ import os
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout, CMakeDeps
 from conan.tools.files import copy
+from conan.tools.files.symlinks import absolute_to_relative_symlinks
 
 class AppRecipe(ConanFile):
     name = "app"
@@ -35,5 +36,10 @@ class AppRecipe(ConanFile):
         cmake.build()
 
     def package(self):
+        print(self.build_folder)
+        for dep in self.dependencies.values():
+            copy(self, "*.so", dep.cpp_info.libdirs[0], os.path.join(self.package_folder, "lib"), keep_path=False)
+            # copy(self, "*.so", self.build_folder, os.path.join(self.package_folder, "lib"), keep_path=False)
         cmake = CMake(self)
         cmake.install()
+        absolute_to_relative_symlinks(self, self.package_folder)

@@ -13,7 +13,16 @@ class UIRecipe(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def requirements(self):
+        self.requires("clock/1.0")
+
     def generate(self):
+        for dep in self.dependencies.values():
+            print (dep.cpp_info.libdirs[0])
+            print (dep.cpp_info.includedirs[0])
+            print (dep.ref.name)
+            copy(self, "*", dep.cpp_info.libdirs[0], os.path.join(self.source_folder, dep.ref.name))
+            copy(self, "*", dep.cpp_info.includedirs[0], os.path.join(self.source_folder, dep.ref.name))
         tc = CMakeToolchain(self)
         tc.generate()    
         deps = CMakeDeps(self)
@@ -34,3 +43,4 @@ class UIRecipe(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["ui"]
         self.cpp_info.system_libs = ["ncurses"]
+        self.cpp_info.system_libs = ["clock"]

@@ -3,6 +3,17 @@
 
 using namespace std;
 
+Clock* Clock::inst = NULL;
+
+Clock * Clock::getClock()
+{
+    if (inst == NULL)
+    {
+        inst = new Clock();
+    }
+    return inst;
+}
+
 Clock::Clock(void)
 {
     day = 0;
