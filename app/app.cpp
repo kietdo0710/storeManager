@@ -10,10 +10,9 @@ using namespace std;
 int main ()
 {
   Clock* myClock = Clock::getClock();
-  Ui* myUi = Ui::getUi();
+  Ui* myUi = Ui::open();
   while (0 == myUi->run()) {
   }
-  // Wait 1 sec for all thread stop
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  myUi->close();
   return 0;
 }

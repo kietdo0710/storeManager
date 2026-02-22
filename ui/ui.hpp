@@ -6,12 +6,16 @@
 class Ui
 {
   public:
-    static Ui* getUi();
+    static Ui* open();
     int run();
+    void close();
   private:
     Ui();
     ~Ui();
-    static void refresh();
+    // Delete copy constructor and assignment
+    Ui(const Ui&) = delete;
+    Ui& operator=(const Ui&) = delete;
+    void refresh();
     void display_basic_ui();
     void debug_display(int);
     void event_display();

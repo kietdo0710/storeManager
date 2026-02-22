@@ -9,12 +9,12 @@ using namespace std;
 int layer = 0;
 int dbgkey;
 bool halt;
-bool stop;
+bool stop = false;
 
 Ui* Ui::uiInst = NULL;
 SetPricePopup* SetPricePopup::popupInst = NULL;
 
-Ui* Ui::getUi()
+Ui* Ui::open()
 {
   if (uiInst == NULL)
   {
@@ -58,6 +58,17 @@ int Ui::run()
     }
   }
   return 0;
+}
+
+void Ui::close()
+{
+  wattroff(ue1, COLOR_PAIR(1));
+
+  // Clean up ncurses library.
+  delwin(desc);
+  delwin(ue1);
+  delwin(debug);
+  endwin();			/* End curses mode		  */
 }
 
 void Ui::refresh()
@@ -111,20 +122,13 @@ Ui::Ui()
   //PANEL* desc_panel = new_panel(desc);
   //PANEL* ue1_panel = new_panel(ue1);
   display_basic_ui();
-  thread t1 = thread(&refresh);
+  thread t1 = thread(&Ui::refresh, this);
   t1.detach();
 }
 
 Ui::~Ui()
 {
   t1.join();
-  wattroff(ue1, COLOR_PAIR(1));
-
-  // Clean up ncurses library.
-  delwin(desc);
-  delwin(ue1);
-  delwin(debug);
-  endwin();			/* End curses mode		  */
   uiInst = NULL;
 }
 
