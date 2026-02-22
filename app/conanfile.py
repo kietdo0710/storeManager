@@ -33,13 +33,12 @@ class AppRecipe(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.configure()
+        cmake.configure(variables={'CMAKE_INSTALL_RPATH_USE_LINK_PATH': 'TRUE'})
+        cmake.configure(variables={'CMAKE_BUILD_WITH_INSTALL_RPATH': 'ON'})
+        cmake.configure(variables={'CMAKE_INSTALL_RPATH': '$ORIGIN/../lib'})
         cmake.build()
 
     def package(self):
-        print(self.build_folder)
-        for dep in self.dependencies.values():
-            copy(self, "*.so", dep.cpp_info.libdirs[0], os.path.join(self.package_folder, "lib"), keep_path=False)
-            # copy(self, "*.so", self.build_folder, os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, "*.so", self.source_folder, os.path.join(self.package_folder, "lib"), keep_path=False)
         cmake = CMake(self)
         cmake.install()
-        absolute_to_relative_symlinks(self, self.package_folder)
